@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title>{% block title %}{% endblock %}Honest Appalachia</title>
+    <link rel=stylesheet type=text/css href="/static/layout.css">
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class=flashes>
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block body %}{% endblock %}
+  </body>
+</html>

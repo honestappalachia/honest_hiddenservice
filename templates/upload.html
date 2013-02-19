@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<form enctype=multipart/form-data method=POST>
+  File to upload: <input type=file name=file><br>
+  Comment: <textarea name=comment></textarea><br>
+  <input type=submit value="Submit">
+</form>
+{% endblock %}

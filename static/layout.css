@@ -1,0 +1,11 @@
+ul.flashes {
+  list-style-type:none;
+}
+
+ul.flashes li.error {
+  background:#FF8080;
+}
+
+ul.flashes li.success {
+  background:#80FF82;
+}
