@@ -28,10 +28,6 @@ def allowed_file(f):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTS
 
-@app.route('/')
-def index():
-    return render_template("index.html")
-
 def handle_file_upload(request):
     '''
     Check that the file upload is valid, save the file to the filesystem,
@@ -84,6 +80,10 @@ def upload():
             flash('You successfully uploaded %s' % safe_filename, 'success')
         return redirect(url_for('upload'))
     return render_template('upload.html')
+
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run()
