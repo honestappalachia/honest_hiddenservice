@@ -79,7 +79,7 @@ def upload():
         if upload_handling_error:
             flash('Error: ' + upload_handling_error, 'error')
         else:
-            flash('You successfully uploaded %s' % safe_filename, 'success')
+            flash('%s uploaded successfully.' % safe_filename, 'success')
         return redirect(url_for('upload'))
     return render_template('upload.html')
 
