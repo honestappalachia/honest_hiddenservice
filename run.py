@@ -35,6 +35,8 @@ def handle_file_upload(request):
     '''
     error = None
     safe_filename = None
+    # DEBUG
+    #print "Padding size: ", len(request.form['padding'])
     upload = request.files['file']
     if not upload:
         error = "No valid file specified (received no file data)"
