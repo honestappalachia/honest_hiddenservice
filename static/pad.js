@@ -33,11 +33,17 @@ function add_padding () {
     document.getElementById('padding').setAttribute('value', padding_string);
 }
 
-function pad_then_upload () {
-    console.log("Adding padding...");
+function pad_then_upload (e) {
+    //e.preventDefault(); // don't submit form while testing
+    var progressbox = document.getElementById('progressbox');
+    progressbox.style.visibility='visible';
+
+    progressbox.innerHTML = "<p>Adding padding...</p>";
     add_padding();
-    console.log("Submitting form");
-    return true; // submit form
+    progressbox.innerHTML += "<p>Done</p>";
+
+    progressbox.innerHTML += "<p>Uploading file... this may take a while.</p><p>If you're using the Tor Browser Bundle, you can estimate your progress in Vidalia by looking at the Bandwidth Graph</p>";
+    progressbox.innerHTML += "<p>Do not close this window until you see the upload confirmation message.</p>";
 }
 
 window.onload = function () {

@@ -9,3 +9,16 @@ ul.flashes li.error {
 ul.flashes li.success {
   background:#80FF82;
 }
+
+div#progressbox {
+    visibility:hidden;
+    position:absolute;
+    top:25%;
+    left:50%;
+    width:300px;
+    margin-left:-150px;
+    z-index:1;
+    background:#ddd;
+    border:3px solid #aaa;
+    padding:16px;
+}
