@@ -6,10 +6,17 @@
 
 {% block body %}
 <noscript>Enable Javascript for enhanced security</noscript>
-<form enctype=multipart/form-data method=post id=uploadForm>
+<form enctype=multipart/form-data method=post id=upload>
   <input type=hidden name=padding id=padding />
-  File to upload: <input type=file name=file><br>
-  Comment: <textarea name=comment></textarea><br>
+  <p>
+    <label class=field for=file>File to upload: </label>
+    <input type=file name=file>
+    <span class=error id=nofile>You must specify a file to upload!</span>
+  </p>
+  <p>
+    <label class=field for=comment>Comment: </label>
+    <textarea name=comment></textarea><br>
+  </p>
   <input type=submit value="Submit">
 </form>
 

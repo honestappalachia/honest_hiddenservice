@@ -33,24 +33,35 @@ function add_padding () {
     document.getElementById('padding').setAttribute('value', padding_string);
 }
 
-function pad_then_upload (e) {
-    //e.preventDefault(); // don't submit form while testing
-    var progressbox = document.getElementById('progressbox');
-    progressbox.style.visibility='visible';
-
-    progressbox.innerHTML = "<p>Adding padding...</p>";
+function pad_upload_form () {
+    var progress_box = $('div#progressbox');
+    progress_box.css('visibility', 'visible');
+    progress_box.html('<p>Generating padding...</p>');
     add_padding();
-    progressbox.innerHTML += "<p>Done</p>";
-
-    progressbox.innerHTML += "<p>Uploading file... this may take a while.</p><p>If you're using the Tor Browser Bundle, you can estimate your progress in Vidalia by looking at the Bandwidth Graph</p>";
-    progressbox.innerHTML += "<p>Do not close this window until you see the upload confirmation message.</p>";
+    progress_box.html('<p>Generating padding... <span id=ok>Done.</span></p>');
 }
 
-window.onload = function () {
-    var form = document.getElementById('uploadForm');
-    try {
-        form.addEventListener("submit", pad_then_upload, false);
-    } catch(e) {
-        form.attachEvent("onsubmit", pad_then_upload); // Internet Explorer 8-
+function validate_form (form) {
+    if($('input[type=file]', form).val() == '') {
+        $('span.error#nofile', form).css('visibility', 'visible');
+        return false;
+    } else {
+        $('span.error#nofile', form).css('visibility', 'hidden');
     }
+    return true;
 };
+
+$(document).ready(function () {
+    $('form#upload').submit(function () {
+        if(validate_form(this)) {
+            pad_upload_form();
+            var progress_box = $('div#progressbox');
+            progress_box.append("<p>Uploading file... this may take a while.</p>");
+            progress_box.append("<p>If you're using the Tor Browser Bundle, you can estimate your progress in Vidalia by looking at the Bandwidth Graph</p>");
+            progress_box.append("<p>Do not close this window until you see the upload confirmation message.</p>");
+            progress_box.append('<img class=center src="/static/progress-bar.gif">');
+            return true;
+        }
+        return false;
+    });
+});
