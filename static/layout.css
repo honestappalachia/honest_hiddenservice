@@ -1,3 +1,62 @@
+body {
+  font:14px/1.5 "Verdana", sans-serif;
+}
+
+p {
+  margin-bottom:1em;
+}
+
+div#container {
+  width:600px;
+  margin:1em auto;
+}
+
+.center {
+  display:block;
+  margin:0 auto;
+}
+
+img.center {
+  margin-bottom:1em;
+}
+
+form#upload ol {
+  list-style-type:none;
+  padding-left:1em;
+}
+
+form#upload ol li {
+  margin-bottom:1em;
+}
+
+form#upload fieldset {
+  width:600px;
+  border:1px solid #ccc;
+}
+
+form#upload fieldset legend {
+  padding:0 0.25em;
+  margin-left:1em;
+}
+
+form#upload textarea {
+  font:14px/1.5 Verdana, sans-serif;
+  padding:6px;
+}
+
+.warning {
+  background:#FFCFCF;
+  border:2px solid #FF6B6B;
+  padding:4px;
+  font-style:italic;
+}
+
+.ok {
+  background:#C4FFC9;
+  border:2px solid #73FF7E;
+  padding:4px;
+}
+
 ul.flashes {
   list-style-type:none;
 }
@@ -22,32 +81,27 @@ ul.flashes li.success {
 }
 
 div#progressbox {
-    visibility:hidden;
-    position:absolute;
-    top:25%;
-    left:50%;
-    width:300px;
-    margin-left:-150px;
-    z-index:1;
-    background:#ddd;
-    border:3px solid #aaa;
-    padding:16px;
-}
-
-.center {
-    display:block;
-    margin:0 auto;
+  visibility:hidden;
+  position:absolute;
+  top:25%;
+  left:50%;
+  width:300px;
+  margin-left:-150px;
+  z-index:1;
+  background:#ddd;
+  border:3px solid #aaa;
+  padding:16px;
 }
 
 .error {
-    visibility:hidden;
-    background:#FF4747;
-    color:#fff;
-    padding:8px;
-    border:3px solid #E01B1B;
+  visibility:hidden;
+  background:#FF4747;
+  color:#fff;
+  padding:8px;
+  border:3px solid #E01B1B;
 }
 
 label.field {
-    text-align:left;
-    padding-right:16px;
+  text-align:left;
+  padding-right:16px;
 }

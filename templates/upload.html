@@ -5,19 +5,33 @@
 {% endblock %}
 
 {% block body %}
-<noscript>Enable Javascript for enhanced security</noscript>
+<img class=center src="/static/logo-small.png">
+<p>Welcome to the Honest Appalachia secure submission page.</p>
+<p>You can help us by including a descriptive comment about the origin or significance of your upload.
+<p class="warning">To help us protect your anonymity, do not include any personally identifying information in any of the files you upload, their filenames, or any comment you might leave.</p>
+<p>If you're having difficulty, make sure you read our <a href="https://docs.honestappalachia.org/online-submission.html">Online Submission Guide</a> for instructions and tips.</p>
+<p>You can contact us with questions at <a href="mailto:honestappalachia@riseup.net">honestappalachia@riseup.net</a></p>
+
+<noscript><p><strong>Enable Javascript for enhanced security</strong></p></noscript>
 <form enctype=multipart/form-data method=post id=upload>
   <input type=hidden name=padding id=padding />
-  <p>
-    <label class=field for=file>File to upload: </label>
-    <input type=file name=file>
-    <span class=error id=nofile>You must specify a file to upload!</span>
-  </p>
-  <p>
-    <label class=field for=comment>Comment: </label>
-    <textarea name=comment></textarea><br>
-  </p>
-  <input type=submit value="Submit">
+  <fieldset>
+    <legend>Upload file</legend>
+    <ol>
+      <li>
+        <label class=field for=file>File to upload: </label>
+        <input type=file name=file>
+        <span class=error id=nofile>You must specify a file to upload!</span>
+      </li>
+      <li>
+        <label class=field for=comment>Comment: </label>
+        <textarea name=comment rows=12 cols=48></textarea>
+      </li>
+      <li>
+        <input type=submit value="Submit">
+      </li>
+    </ol>
+  </fieldset>
 </form>
 
 <div id="progressbox"></div>
