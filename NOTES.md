@@ -11,6 +11,17 @@ http://www.thegeekstuff.com/2008/11/overview-of-ramfs-and-tmpfs-on-linux/.
 Should pull request beanstalkc and add support for using `with`. Looks like
 I just need to add an `__exit__` function?
 
+# Wed Feb 27 20:04:47 PST 2013
+
+One concern is memory allocation in Python. If the beanstalk_worker reads any
+data associated with the file, it will be stored in memory by the Python
+process and will be difficult to expunge. While it may be possible to use
+ctypes to memset specific Python objects, it is too hard to know what memory
+artifacts may be created by various operations and standard library calls.
+
+A better solution would be to spawn a new Python process just for each job.
+Then we can periodically clear unused RAM using secure-delete in Debian.
+
 # Wed Mar  6 19:46:41 PST 2013
 
 We want to create a unique ID that will identify an upload with revealing
