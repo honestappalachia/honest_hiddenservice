@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 import json
 import random
+import hashlib
 
 from flask import Flask, render_template, request, redirect, url_for, \
         safe_join, flash
@@ -27,6 +28,14 @@ def allowed_file(f):
     filename = f.filename
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTS
+
+def get_upload_uid(filename, timestamp):
+    """
+    Returns a hash of the upload filename, current timestamp, and a random salt
+    to be used as a unique ID for the upload
+    """
+    return hashlib.sha256( filename + timestamp + str(random.randint(0,
+        65536))).hexdigest()
 
 def handle_file_upload(request):
     '''
@@ -56,17 +65,20 @@ def handle_file_upload(request):
                     random.randint(0, 1024))
         safe_path = safe_join(UPLOAD_FOLDER, safe_filename)
         upload.save(safe_path)
+        timestamp = datetime.now()
+        upload_uid = get_upload_uid(safe_filename, str(timestamp))
         upload_info = {
-                'filename': safe_filename,
-                'path':     safe_path,
-                'received': str(datetime.now()), # can't json-encode datetime
-                'comment':  request.form['comment']
+                'filename':     safe_filename,
+                'path':         safe_path,
+                'uid':          upload_uid,
+                'timestamp':    str(timestamp), # can't json-encode datetime
+                'comment':      request.form['comment']
             }
         beanstalk = beanstalkc.Connection(host='localhost', port=11300)
         beanstalk.put(json.dumps(upload_info))
         beanstalk.close()
 
-    return error, safe_filename
+    return error, safe_filename, upload_uid
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -75,11 +87,13 @@ def upload():
     the beanstalk work queue to process it.
     '''
     if request.method == 'POST':
-        upload_handling_error, safe_filename = handle_file_upload(request)
+        upload_handling_error, safe_filename, upload_uid \
+                = handle_file_upload(request)
         if upload_handling_error:
             flash('Error: ' + upload_handling_error, 'error')
         else:
             flash('%s uploaded successfully.' % safe_filename, 'success')
+            flash('Your upload ID is %s' % upload_uid, 'success')
         return redirect(url_for('upload'))
     return render_template('upload.html')
 
