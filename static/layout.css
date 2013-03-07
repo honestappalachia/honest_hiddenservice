@@ -2,6 +2,17 @@ ul.flashes {
   list-style-type:none;
 }
 
+ul.flashes li {
+  text-align:center;
+  padding:8px;
+  border-bottom:1px solid #aaa;
+}
+
+ul.flashes li:last-child {
+  box-shadow:3px 3px 5px #ddd;
+  margin-bottom:16px;
+}
+
 ul.flashes li.error {
   background:#FF8080;
 }
