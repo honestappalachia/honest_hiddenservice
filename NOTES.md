@@ -69,3 +69,45 @@ smem from secure-delete) and RAM remnance in a long-running Python process
 approach here.
 
 Good stuff from the openBSD project on encrypted swap: http://static.usenix.org/events/sec2000/full_papers/provos/provos_html/index.html
+
+# Thu Mar  7 15:48:15 PST 2013
+
+I'm not sure if we need the beanstalk job queue anymore.
+
+Pros:
+
+* mitigates potential memory exhaustion attack (DoS).
+    * benefit here is minimal, especially if using a ram-backed fs for
+      storing files in the first place (then there is nothing we can do).
+* faster response to user. Generating the noise file and encrypting everything
+  can be slow, and upload files over Tor is slow enough as it is.
+
+Cons:
+
+* increased complexity (more moving parts)
+* user does not *truly* know if upload was successfully processed - just that
+  the server was able to save the upload to disk. if any error occurs in the
+  worker, they won't know until they check the status page for the upload.
+* another venue for data remnance. the beanstalk jobs do not contain actual
+  file data, but they do contain metadata that identifies the *upload* (not the
+  user, unless they put their name in the comment). Specifically, the beanstalk
+  job contains
+    * filename
+    * path to file on disk
+    * "uid" hash
+    * comment
+    * upload timestamp
+
+One nice idea *might* be to handle the upload form in stages with AJAX. This
+way, the user gets confirmation of each step, including processing, and when we
+are done the upload ID can be a link to the status page ready to start
+discussion (this could happen anyway, with an initial "Processing job"
+message).
+
+Since we are no longer using a 3rd remote file server, it would be good to have
+the honest server notify someone (over Tor, of course, and possibly with some
+obfuscating delay) when files are uploaded, so they can be removed from the
+server as quickly as possible.
+
+Also, the discussion page should have a "burn" feature available to both
+parties to delete it for any reason.
