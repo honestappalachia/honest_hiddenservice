@@ -1,6 +1,7 @@
-from datetime import datetime
+import os
 
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for, \
+        safe_join, flash
 from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -56,3 +57,13 @@ class Contact(User):
     
     def __repr__(self):
         return '<Contact %r>' % self.username
+    
+def init_db():
+    db.create_all()
+
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+if __name__ == "__main__":
+    app.run()
