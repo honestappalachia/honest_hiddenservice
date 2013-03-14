@@ -93,6 +93,32 @@ def login():
             return redirect(url_for('index'))
     return render_template('login.html', error=error)
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] == '':
+            error = "You must specify a username."
+        elif request.form['password'] == '':
+            error = "You must specify a password."
+        elif User.query.filter_by(username=request.form['username']).first() \
+                != None:
+            error = "That username is already in use."
+        else:
+            try:
+                new_user = User(request.form['username'],
+                                request.form['password'])
+                db.session.add(new_user)
+                db.session.commit()
+                # Log the newly added user in
+                session['logged_in'] = True
+                session['username'] = new_user.username
+                return redirect(url_for('index'))
+            except:
+                db.session.rollback()
+                error = "An unspecified error occurred. Please report this."
+    return render_template('signup.html', error=error)
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
