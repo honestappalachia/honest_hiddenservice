@@ -70,3 +70,53 @@ div#progressbox {
   border:3px solid #aaa;
   padding:16px;
 }
+
+div#navbar {
+  width:100%;
+  padding:0;
+  margin:0;
+  background:#333;
+}
+
+ul#nav {
+  list-style-type:none;
+  float:right;
+}
+
+ul#nav li {
+  display:block;
+  float:left;
+  padding:4px;
+  margin-right:8px;
+}
+
+ul#nav li a {
+  color:white;
+  text-decoration:none;
+}
+
+ul#nav li a:hover {
+  color:#ccc;
+}
+
+/******************************************************* Clearfix */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}

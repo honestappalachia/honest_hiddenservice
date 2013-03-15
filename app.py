@@ -4,7 +4,7 @@
 import os
 
 from flask import Flask, render_template, request, redirect, url_for, \
-        safe_join, flash, session
+        safe_join, flash, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from werkzeug import generate_password_hash, check_password_hash
 
@@ -124,6 +124,15 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('login'))
+
+@app.route('/users/<username>')
+def user_profile(username):
+    if not session.get('logged_in'):
+        abort(401)
+    if User.query.get(session.get('user_id')).username != username:
+        abort(403)
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user_profile.html', user=user)
 
 @app.route('/')
 def index():
