@@ -46,6 +46,25 @@ class DBTestCase(unittest.TestCase):
         username, password = 'guest', 'guest'
         rv = self.signup(username, password)
         assert 'Welcome to your home page, %s!' % username in rv.data
+        rv = self.signup(username, password)
+        assert 'That username is already in use.' in rv.data
+        rv = self.signup('', password)
+        assert 'You must specify a username.' in rv.data
+        rv = self.signup(username, '')
+        assert 'You must specify a password.' in rv.data
+    
+    def test_login_logout(self):
+        username, password = 'guest', 'guest'
+        rv = self.signup(username, password)
+        rv = self.logout()
+        assert 'You were logged out' in rv.data
+        rv = self.login(username, password)
+        assert 'You were logged in' in rv.data
+        self.logout()
+        rv = self.login(username, 'guestx')
+        assert 'Invalid password' in rv.data
+        rv = self.login('guestx', password)
+        assert 'Invalid username' in rv.data
 
 if __name__ == '__main__':
     unittest.main()
