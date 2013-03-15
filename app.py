@@ -88,7 +88,7 @@ def login():
             error = "Invalid password"
         else:
             session['logged_in'] = True
-            session['username'] = user.username
+            session['user_id'] = user.id
             flash('You were logged in')
             return redirect(url_for('index'))
     return render_template('login.html', error=error)
@@ -112,7 +112,7 @@ def signup():
                 db.session.commit()
                 # Log the newly added user in
                 session['logged_in'] = True
-                session['username'] = new_user.username
+                session['user_id'] = new_user.id
                 return redirect(url_for('index'))
             except:
                 db.session.rollback()
@@ -129,7 +129,8 @@ def logout():
 def index():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    return render_template("index.html", username=session.get('username'))
+    user = User.query.get(session.get('user_id'))
+    return render_template("index.html", user=user)
 
 if __name__ == "__main__":
     app.run()
