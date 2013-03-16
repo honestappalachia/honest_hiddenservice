@@ -82,10 +82,7 @@ class SignupForm(Form):
     def validate_username(form, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username is already in use')
-
-    username = TextField('Username', validators=[
-        validators.DataRequired()
-    ])
+    username = TextField('Username', validators=[validators.Required()])
     password = PasswordField('Password', validators=[
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')
@@ -97,18 +94,12 @@ class LoginForm(Form):
         print User.query.filter_by(username=field.data).first()
         if not User.query.filter_by(username=field.data).first():
             raise ValidationError('Invalid username')
-    
     def validate_password(form, field):
         user = User.query.filter_by(username=form.username.data).first()
         if user and not user.check_password(field.data):
             raise ValidationError('Invalid password')
-            
-    username = TextField('username', validators=[
-        validators.Required(),
-    ])
-    password = PasswordField('Password', validators=[
-        validators.Required(),
-    ])
+    username = TextField('username', validators=[validators.Required()])
+    password = PasswordField('Password', validators=[validators.Required()])
 
 # views
 
