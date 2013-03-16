@@ -12,6 +12,7 @@ class DBTestCase(unittest.TestCase):
         self.db_fd, self.db_path = tempfile.mkstemp()
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + self.db_path
         app.config['TESTING'] = True
+        app.config['CSRF_ENABLED'] = False
         self.app = app.test_client()
         init_db()
         
@@ -36,26 +37,29 @@ class DBTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
     
-    def signup(self, username, password):
+    def signup(self, username, password, confirm):
         return self.app.post('/signup', data=dict(
             username=username,
-            password=password
+            password=password,
+            confirm=confirm
         ), follow_redirects=True)
     
     def test_signup(self):
         username, password = 'guest', 'guest'
-        rv = self.signup(username, password)
-        assert 'Welcome to your home page, %s!' % username in rv.data
-        rv = self.signup(username, password)
-        assert 'That username is already in use.' in rv.data
-        rv = self.signup('', password)
-        assert 'You must specify a username.' in rv.data
-        rv = self.signup(username, '')
-        assert 'You must specify a password.' in rv.data
+        rv = self.signup(username, password, password)
+        assert 'Successfully signed up' in rv.data
+        rv = self.signup(username, password, password)
+        assert 'Username is already in use' in rv.data
+        rv = self.signup('', password, password)
+        assert 'This field is required' in rv.data
+        rv = self.signup(username, '', '')
+        assert 'This field is required' in rv.data
+        rv = self.signup(username, password, password + 'x')
+        assert 'Passwords must match' in rv.data
     
     def test_login_logout(self):
         username, password = 'guest', 'guest'
-        rv = self.signup(username, password)
+        rv = self.signup(username, password, password)
         rv = self.logout()
         assert 'You were logged out' in rv.data
         rv = self.login(username, password)
