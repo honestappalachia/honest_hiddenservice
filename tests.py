@@ -28,15 +28,6 @@ class DBTestCase(unittest.TestCase):
         rv = self.app.get('/', follow_redirects=True)
         assert 'Login' in rv.data
         
-    def login(self, username, password):
-        return self.app.post('/login', data=dict(
-            username=username,
-            password=password
-        ), follow_redirects=True)
-    
-    def logout(self):
-        return self.app.get('/logout', follow_redirects=True)
-    
     def signup(self, username, password, confirm):
         return self.app.post('/signup', data=dict(
             username=username,
@@ -57,18 +48,26 @@ class DBTestCase(unittest.TestCase):
         rv = self.signup(username, password, password + 'x')
         assert 'Passwords must match' in rv.data
     
+    def login(self, username, password):
+        return self.app.post('/login', data=dict(
+            username=username,
+            password=password
+        ), follow_redirects=True)
+    
+    def logout(self):
+        return self.app.get('/logout', follow_redirects=True)
+    
     def test_login_logout(self):
         username, password = 'guest', 'guest'
         rv = self.signup(username, password, password)
-        rv = self.logout()
-        assert 'You were logged out' in rv.data
         rv = self.login(username, password)
         assert 'You were logged in' in rv.data
-        self.logout()
-        rv = self.login(username, 'guestx')
-        assert 'Invalid password' in rv.data
+        rv = self.logout()
+        assert 'You were logged out' in rv.data
         rv = self.login('guestx', password)
         assert 'Invalid username' in rv.data
+        rv = self.login(username, 'guestx')
+        assert 'Invalid password' in rv.data
 
 if __name__ == '__main__':
     unittest.main()

@@ -79,49 +79,61 @@ def init_db():
 
 # forms
 class SignupForm(Form):
-    def validate_username_unused(form, field):
+    def validate_username(form, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Username is already in use')
 
     username = TextField('Username', validators=[
-        validators.DataRequired(),
-        validate_username_unused
+        validators.DataRequired()
     ])
     password = PasswordField('Password', validators=[
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
+    
+class LoginForm(Form):
+    def validate_username(form, field):
+        print User.query.filter_by(username=field.data).first()
+        if not User.query.filter_by(username=field.data).first():
+            raise ValidationError('Invalid username')
+    
+    def validate_password(form, field):
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and not user.check_password(field.data):
+            raise ValidationError('Invalid password')
+            
+    username = TextField('username', validators=[
+        validators.Required(),
+    ])
+    password = PasswordField('Password', validators=[
+        validators.Required(),
+    ])
 
 # views
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        user = User.query.filter_by(username=request.form['username']).first()
-        if not user:
-            error = "Invalid username"
-        elif not user.check_password(request.form['password']):
-            error = "Invalid password"
-        else:
-            session['logged_in'] = True
-            session['user_id'] = user.id
-            flash('You were logged in')
-            return redirect(url_for('index'))
-    return render_template('login.html', error=error)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignupForm(request.form)
     if request.method == 'POST' and form.validate():
-        user = User(request.form['username'], request.form['password'])
+        user = User(form.username.data, form.password.data)
         # TODO handle exceptions from database
         db.session.add(user)
         db.session.commit()
         flash('Successfully signed up')
         return redirect(url_for('login'))
     return render_template('signup.html', form=form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = User.query.filter_by(username=form.username.data).first()
+        session['logged_in'] = True
+        session['user_id'] = user.id
+        flash('You were logged in')
+        return redirect(url_for('index'))
+    return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
