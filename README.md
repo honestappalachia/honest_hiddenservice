@@ -1,8 +1,24 @@
-Run the python scripts in individual terminals:
+# For developers
 
-1. `beanstalkd -l 127.0.0.1 &`
-2. `python beanstalk_worker.py`
-3. `python run.py`
+After you've cloned the repo, first create a local virtualenv ('./env' is
+already in gitignore).
 
-Upload some files! You will need to create `./uploads` or set another directory
-for `UPLOAD_DIR`.
+    $ virtualenv --distribute env
+    $ . env/bin/activate
+
+Install the site's dependencies with pip:
+
+    (env) $ pip install -r requirements.txt 
+
+Now, you need to update the settings file for you own use.
+
+    (env) $ cp settings_template.cfg settings.cfg
+
+Edit `settings.cfg`, filling in your own values for any redacted fields.
+
+Now you can run the Flask development server:
+
+    (env) $ ./app.py
+
+Make sure you write unit tests (`tests.py`) for any added functionality. Please
+make sure the tests pass before committing code.
