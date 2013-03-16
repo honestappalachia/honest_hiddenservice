@@ -1,13 +1,15 @@
 {% extends "layout.html" %}
+{% from "_formhelpers.html" import render_field %}
 
 {% block title %}Signup{% endblock %}
 
 {% block body %}
 <h2>Signup</h2>
-{% if error %}<p class=error><strong>Error:</strong> {{ error }}<p>{% endif %}
-<form action="{{ url_for('signup') }}" method=post>
-    <p><label for=username>Username:</label><input type=text name=username></p>
-    <p><label for=password>Password:</label><input type=password name=password></p>
+<form method=post action="{{ url_for('signup') }}">
+    {{ form.hidden_tag() }}
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.confirm) }}
     <p><input type=submit value="Sign up"></p>
 </form>
 {% endblock %}

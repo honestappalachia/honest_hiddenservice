@@ -6,6 +6,8 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, \
         safe_join, flash, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.wtf import Form
+from wtforms import TextField, PasswordField, validators, ValidationError
 from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -75,6 +77,22 @@ class Contact(User):
 def init_db():
     db.create_all()
 
+# forms
+class SignupForm(Form):
+    def validate_username_unused(form, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Username is already in use')
+
+    username = TextField('Username', validators=[
+        validators.DataRequired(),
+        validate_username_unused
+    ])
+    password = PasswordField('Password', validators=[
+        validators.Required(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+
 # views
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -95,29 +113,15 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] == '':
-            error = "You must specify a username."
-        elif request.form['password'] == '':
-            error = "You must specify a password."
-        elif User.query.filter_by(username=request.form['username']).first() \
-                != None:
-            error = "That username is already in use."
-        else:
-            try:
-                new_user = User(request.form['username'],
-                                request.form['password'])
-                db.session.add(new_user)
-                db.session.commit()
-                # Log the newly added user in
-                session['logged_in'] = True
-                session['user_id'] = new_user.id
-                return redirect(url_for('index'))
-            except:
-                db.session.rollback()
-                error = "An unspecified error occurred. Please report this."
-    return render_template('signup.html', error=error)
+    form = SignupForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = User(request.form['username'], request.form['password'])
+        # TODO handle exceptions from database
+        db.session.add(user)
+        db.session.commit()
+        flash('Successfully signed up')
+        return redirect(url_for('login'))
+    return render_template('signup.html', form=form)
 
 @app.route('/logout')
 def logout():
