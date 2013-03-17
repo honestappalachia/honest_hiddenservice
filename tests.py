@@ -32,7 +32,9 @@ class DBTestCase(unittest.TestCase):
         return self.app.post('/signup', data=dict(
             username=username,
             password=password,
-            confirm=confirm
+            confirm=confirm,
+            recaptcha_challenge_field='test',
+            recaptcha_response_field='test'
         ), follow_redirects=True)
     
     def test_signup(self):

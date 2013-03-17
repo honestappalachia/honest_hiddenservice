@@ -6,8 +6,9 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, \
         safe_join, flash, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.wtf import Form
-from wtforms import TextField, PasswordField, validators, ValidationError
+from flask.ext.wtf import Form, RecaptchaField
+from wtforms import TextField, PasswordField, RadioField, validators, \
+        ValidationError
 from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -88,6 +89,7 @@ class SignupForm(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
+    recaptcha = RecaptchaField()
     
 class LoginForm(Form):
     def validate_username(form, field):
