@@ -2,6 +2,7 @@
 
 # imports and initialization
 import os
+from functools import wraps
 
 from flask import Flask, render_template, request, redirect, url_for, \
         safe_join, flash, session, abort
@@ -105,6 +106,15 @@ class LoginForm(Form):
 
 # views
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            flash("You must be logged in to access this page.")
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignupForm(request.form)
@@ -135,18 +145,16 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/users/<username>')
+@login_required
 def user_profile(username):
-    if not session.get('logged_in'):
-        abort(401)
     if User.query.get(session.get('user_id')).username != username:
         abort(403)
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('user_profile.html', user=user)
 
 @app.route('/')
+@login_required
 def index():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
     user = User.query.get(session.get('user_id'))
     return render_template("index.html", user=user)
 
