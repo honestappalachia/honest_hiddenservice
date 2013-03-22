@@ -110,7 +110,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('logged_in'):
-            flash("You must be logged in to access this page.")
+            flash("You must be logged in to access this page.", 'error')
             return redirect(url_for('login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
@@ -123,7 +123,7 @@ def signup():
         # TODO handle exceptions from database
         db.session.add(user)
         db.session.commit()
-        flash('Successfully signed up')
+        flash('Successfully signed up', 'success')
         return redirect(url_for('login'))
     return render_template('signup.html', form=form)
 
@@ -134,14 +134,14 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         session['logged_in'] = True
         session['user_id'] = user.id
-        flash('You were logged in')
+        flash('You were logged in', 'success')
         return redirect(url_for('index'))
     return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
-    flash('You were logged out')
+    flash('You were logged out', 'success')
     return redirect(url_for('login'))
 
 @app.route('/settings')

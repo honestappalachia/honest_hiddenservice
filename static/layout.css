@@ -18,14 +18,10 @@ img.center {
 .error {
   background:#FF4747;
   color:#fff;
-  padding:8px;
-  border:3px solid #E01B1B;
 }
 
 .warning {
   background:#FFCFCF;
-  border:2px solid #FF6B6B;
-  padding:4px;
   font-style:italic;
 }
 
@@ -41,13 +37,8 @@ ul.flashes {
 
 ul.flashes li {
   text-align:center;
-  padding:8px;
+  padding:4px;
   border-bottom:1px solid #aaa;
-}
-
-ul.flashes li:last-child {
-  box-shadow:3px 3px 5px #ddd;
-  margin-bottom:16px;
 }
 
 ul.flashes li.error {
@@ -56,6 +47,11 @@ ul.flashes li.error {
 
 ul.flashes li.success {
   background:#80FF82;
+}
+
+ul.flashes li.error {
+  background:#FF4747;
+  color:#fff;
 }
 
 div#progressbox {
@@ -75,7 +71,14 @@ div#navbar {
   width:100%;
   padding:0;
   margin:0;
-  background:#333;
+  background:#444;
+}
+
+div#navbar p {
+  float:left;
+  padding:4px;
+  color:white;
+  margin-bottom:0;
 }
 
 ul#nav {
@@ -84,19 +87,20 @@ ul#nav {
 }
 
 ul#nav li {
-  display:block;
   float:left;
-  padding:4px;
-  margin-right:8px;
 }
 
 ul#nav li a {
+  display:block;
+  padding:4px 8px;
   color:white;
   text-decoration:none;
 }
 
 ul#nav li a:hover {
-  color:#ccc;
+  /*color:#ccc;*/
+  background:#3a3a3a;
+  color:#87B0E6;
 }
 
 /******************************************************* Clearfix */
