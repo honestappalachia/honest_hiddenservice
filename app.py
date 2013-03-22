@@ -144,13 +144,11 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('login'))
 
-@app.route('/users/<username>')
+@app.route('/settings')
 @login_required
-def user_profile(username):
-    if User.query.get(session.get('user_id')).username != username:
-        abort(403)
-    user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user_profile.html', user=user)
+def settings():
+    user = User.query.get(session.get('user_id'))
+    return render_template("settings.html", user=user)
 
 @app.route('/')
 @login_required

@@ -4,8 +4,9 @@
 
 {% block body %}
 <div class=clearfix id=navbar>
+    <p>Welcome back, {{ user.username }}</p>
     <ul id=nav>
-        <li><a href="{{ url_for('user_profile', username=user.username) }}">{{ user.username }}</a></li>
+        <li><a href="{{ url_for('settings') }}">Settings</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
 </div>
