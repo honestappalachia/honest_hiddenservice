@@ -120,11 +120,14 @@ def signup():
     form = SignupForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User(form.username.data, form.password.data)
-        # TODO handle exceptions from database
-        db.session.add(user)
-        db.session.commit()
-        flash('Successfully signed up', 'success')
-        return redirect(url_for('login'))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('Successfully signed up', 'success')
+            return redirect(url_for('login'))
+        except:
+            db.session.rollback()
+            flash('An unexpected database error occurred. Please report this bug.')
     return render_template('signup.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
