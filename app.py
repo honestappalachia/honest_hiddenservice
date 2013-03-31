@@ -133,7 +133,7 @@ class LoginForm(Form):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('logged_in'):
+        if not session.get('user_id'):
             flash("You must be logged in to access this page.", 'error')
             return redirect(url_for('login', next=request.url))
         return f(*args, **kwargs)
@@ -176,7 +176,6 @@ def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.query.filter_by(username=form.username.data).first()
-        session['logged_in'] = True
         session['user_id'] = user.id
         flash('You were logged in', 'success')
         return redirect(url_for('index'))
@@ -184,7 +183,6 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
     session.pop('user_id', None)
     flash('You were logged out', 'success')
     return redirect(url_for('login'))
