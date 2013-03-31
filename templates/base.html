@@ -2,15 +2,20 @@
 <html>
   <head>
     <meta charset=utf-8>
-    <title>{% block title %}{% endblock %} | Honesty Project</title>
+    <title>{% block title %}Honesty Project{% endblock %}</title>
+    {% block css %}
     <link rel=stylesheet type=text/css href="/static/reset.css">
-    <link rel=stylesheet type=text/css href="/static/layout.css">
+    <link rel=stylesheet type=text/css href="/static/base.css">
+    {% endblock %}
+    {% block script %}
     <script type=text/javascript src="/static/jquery-1.9.1.js"></script>
-    {% block head %}{% endblock %}
+    {% endblock %}
   </head>
   <body>
+    <div id=header>{% block header %}{% endblock %}</div>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
+      <div id=messages-wrap>
         <div id=messages>
           <ul class=flashes>
             {% for category, message in messages %}
@@ -18,10 +23,9 @@
             {% endfor %}
           </ul>
         </div>
+      </div>
       {% endif %}
     {% endwith %}
-    <div id=container>
-      {% block body %}{% endblock %}
-    </div>
+    <div id=content>{% block content %}{% endblock %}</div>
   </body>
 </html>
