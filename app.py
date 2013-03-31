@@ -114,7 +114,9 @@ class SourceSignupForm(SignupForm):
 
 class ContactSignupForm(SignupForm):
     user_type = HiddenField(default='contact')
-    email = TextField('Email', validators=[validators.Required()])
+    email = TextField('Email', validators=[
+        validators.Required(),
+        validators.Email('Must be a valid email address')])
     public_key = TextAreaField('Public Key', [validators.Required()])
 
 class LoginForm(Form):

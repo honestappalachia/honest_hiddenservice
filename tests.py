@@ -88,6 +88,8 @@ class DBTestCase(unittest.TestCase):
         contact_form = dict(self.user_form_common, user_type='contact',
                 email='test@test.com', public_key='123')
         self.shared_signup_tests(contact_form)
+        rv = self.signup(**dict(contact_form, email='notavalidemail'))
+        assert 'Must be a valid email address' in rv.data
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(
