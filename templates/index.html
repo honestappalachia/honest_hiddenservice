@@ -2,13 +2,16 @@
 
 {% block title %}Home{% endblock %}
 
-{% block content %}
-<div class=clearfix id=navbar>
+{% block header %}
+<div id=navbar class=clearfix>
     <p>Welcome back, {{ user.username }}</p>
     <ul id=nav>
         <li><a href="{{ url_for('settings') }}">Settings</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
 </div>
+{% endblock %}
+
+{% block content %}
 <p>Welcome to your home page, {{ user.username }}!</p>
 {% endblock %}
