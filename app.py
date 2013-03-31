@@ -119,7 +119,6 @@ class ContactSignupForm(SignupForm):
 
 class LoginForm(Form):
     def validate_username(form, field):
-        print User.query.filter_by(username=field.data).first()
         if not User.query.filter_by(username=field.data).first():
             raise ValidationError('Invalid username')
     def validate_password(form, field):
