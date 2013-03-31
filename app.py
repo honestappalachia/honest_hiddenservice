@@ -5,7 +5,7 @@ import os
 from functools import wraps
 
 from flask import Flask, render_template, request, redirect, url_for, \
-        safe_join, flash, session, abort
+        safe_join, flash, session, abort, g
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import Form, RecaptchaField
 from wtforms import TextField, PasswordField, RadioField, validators, \
@@ -139,6 +139,12 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user_id' in session:
+        g.user = User.query.get(session['user_id'])
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     def add_and_redirect(user):
@@ -179,20 +185,19 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
+    session.pop('user_id', None)
     flash('You were logged out', 'success')
     return redirect(url_for('login'))
 
 @app.route('/settings')
 @login_required
 def settings():
-    user = User.query.get(session.get('user_id'))
-    return render_template("settings.html", user=user)
+    return render_template("settings.html", user=g.user)
 
 @app.route('/')
 @login_required
 def index():
-    user = User.query.get(session.get('user_id'))
-    return render_template("index.html", user=user)
+    return render_template("index.html", user=g.user)
 
 if __name__ == "__main__":
     app.run()
