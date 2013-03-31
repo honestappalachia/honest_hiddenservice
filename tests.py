@@ -86,10 +86,16 @@ class DBTestCase(unittest.TestCase):
 
     def test_signup_contact(self):
         contact_form = dict(self.user_form_common, user_type='contact',
-                email='test@test.com', public_key='123')
+                email='test@test.com', public_key=open('devgpg.pub').read())
         self.shared_signup_tests(contact_form)
+        rv = self.signup(**dict(contact_form, email=''))
+        assert 'This field is required' in rv.data
         rv = self.signup(**dict(contact_form, email='notavalidemail'))
         assert 'Must be a valid email address' in rv.data
+        rv = self.signup(**dict(contact_form, public_key=''))
+        assert 'This field is required' in rv.data
+        rv = self.signup(**dict(contact_form, public_key='notapublickey'))
+        assert 'Not a valid ASCII-armored GPG public key' in rv.data
 
     def login(self, username, password):
         return self.app.post('/login', data=dict(

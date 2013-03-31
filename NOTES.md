@@ -111,3 +111,15 @@ server as quickly as possible.
 
 Also, the discussion page should have a "burn" feature available to both
 parties to delete it for any reason.
+
+# Sun Mar 31 13:00:38 PDT 2013
+
+Working with GPG keys.
+
+1. Generate a key
+
+    gpg --gen-key
+
+2. Export a key
+
+    gpg --armor --output pubkey.txt --export 'Your Name'

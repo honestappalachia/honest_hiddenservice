@@ -113,6 +113,13 @@ class SourceSignupForm(SignupForm):
     user_type = HiddenField(default='source')
 
 class ContactSignupForm(SignupForm):
+    def validate_public_key(form, field):
+        def striplist(l):
+            return([x.strip() for x in l])
+        public_key_lines = striplist(field.data.strip().split('\n'))
+        if not(public_key_lines[0] == '-----BEGIN PGP PUBLIC KEY BLOCK-----' and
+               public_key_lines[-1] == '-----END PGP PUBLIC KEY BLOCK-----'):
+            raise ValidationError('Not a valid ASCII-armored GPG public key')
     user_type = HiddenField(default='contact')
     email = TextField('Email', validators=[
         validators.Required(),
