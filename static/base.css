@@ -104,23 +104,16 @@ ul#nav li a:hover {
 }
 
 /******************************************************* Clearfix */
+/* For modern browsers */
+.clearfix:before,
 .clearfix:after {
-	content: ".";
-	display: block;
-	clear: both;
-	visibility: hidden;
-	line-height: 0;
-	height: 0;
+    content:"";
+    display:table;
 }
- 
+.clearfix:after {
+    clear:both;
+}
+/* For IE 6/7 (trigger hasLayout) */
 .clearfix {
-	display: inline-block;
-}
- 
-html[xmlns] .clearfix {
-	display: block;
-}
- 
-* html .clearfix {
-	height: 1%;
+    zoom:1;
 }
