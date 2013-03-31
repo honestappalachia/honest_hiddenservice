@@ -7,10 +7,9 @@
 <h2>Signup</h2>
 <form method=post action="{{ url_for('signup') }}">
     {{ form.hidden_tag() }}
-    {{ render_field(form.username) }}
-    {{ render_field(form.password) }}
-    {{ render_field(form.confirm) }}
-    {{ render_field(form.recaptcha) }}
-    <p><input type=submit value="Sign up"></p>
+    {% for field in form if field.widget.input_type != 'hidden' %}
+        {{ render_field(field) }}
+    {% endfor %}
+    <p><input type=submit value="Continue"></p>
 </form>
 {% endblock %}

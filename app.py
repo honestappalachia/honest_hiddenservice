@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, redirect, url_for, \
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import Form, RecaptchaField
 from wtforms import TextField, PasswordField, RadioField, validators, \
-        ValidationError
+        ValidationError, TextAreaField, HiddenField
 from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -50,6 +50,9 @@ class Source(User):
     __mapper_args__ = {
         'polymorphic_identity':'source',
     }
+
+    def __init__(self, username, password):
+        super(Source, self).__init__(username, password)
     
     def __repr__(self):
         return '<Source %r>' % self.username
@@ -68,10 +71,17 @@ class Organization(User):
 class Contact(User):
     __tablename__ = 'contacts'
     id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    email = db.Column(db.String, unique=True)
+    public_key = db.Column(db.String)
     
     __mapper_args__ = {
         'polymorphic_identity':'contact',
     }
+
+    def __init__(self, username, password, email, public_key):
+        super(Contact, self).__init__(username, password)
+        self.email = email
+        self.public_key = public_key
     
     def __repr__(self):
         return '<Contact %r>' % self.username
@@ -80,6 +90,13 @@ def init_db():
     db.create_all()
 
 # forms
+class SignupUserChoiceForm(Form):
+    user_type_choice = RadioField('What type of user are you?', choices=[
+        ('source', 'Source'),
+        ('contact', 'Contact')],
+        default='source',
+        validators=[validators.Required()])
+
 class SignupForm(Form):
     def validate_username(form, field):
         if User.query.filter_by(username=field.data).first():
@@ -91,7 +108,15 @@ class SignupForm(Form):
     ])
     confirm = PasswordField('Repeat Password')
     recaptcha = RecaptchaField()
-    
+
+class SourceSignupForm(SignupForm):
+    user_type = HiddenField(default='source')
+
+class ContactSignupForm(SignupForm):
+    user_type = HiddenField(default='contact')
+    email = TextField('Email', validators=[validators.Required()])
+    public_key = TextAreaField('Public Key', [validators.Required()])
+
 class LoginForm(Form):
     def validate_username(form, field):
         print User.query.filter_by(username=field.data).first()
@@ -117,17 +142,28 @@ def login_required(f):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form = SignupForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User(form.username.data, form.password.data)
-        try:
-            db.session.add(user)
-            db.session.commit()
-            flash('Successfully signed up', 'success')
-            return redirect(url_for('login'))
-        except:
-            db.session.rollback()
-            flash('An unexpected database error occurred. Please report this bug.')
+    def add_and_redirect(user):
+        db.session.add(user)
+        db.session.commit()
+        flash('Successfully signed up', 'success')
+        return redirect(url_for('login'))
+    user_type = request.values.get('user_type')
+    if user_type == 'source':
+        form = SourceSignupForm(request.form)
+        if form.validate_on_submit():
+            return add_and_redirect(Source(form.username.data,
+                form.password.data))
+    elif user_type == 'contact':
+        form = ContactSignupForm(request.form)
+        if form.validate_on_submit():
+            return add_and_redirect(Contact(form.username.data,
+                form.password.data, form.email.data, form.public_key.data))
+    else:
+        form = SignupUserChoiceForm(request.form)
+        if form.validate_on_submit():
+            # TODO: make sure form validation covers any malicious input
+            return redirect(url_for('signup',
+                user_type=form.user_type_choice.data))
     return render_template('signup.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
