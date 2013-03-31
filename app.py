@@ -13,7 +13,7 @@ from wtforms import TextField, PasswordField, RadioField, validators, \
 from werkzeug import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.config.from_pyfile('settings.cfg')
+app.config.from_pyfile('settings.py')
 db = SQLAlchemy(app)
 
 # database
