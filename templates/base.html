@@ -9,6 +9,7 @@
     {% endblock %}
     {% block script %}
     <script type=text/javascript src="/static/jquery-1.9.1.js"></script>
+    <script src="{{ url_for('static', filename='base.js') }}"></script>
     {% endblock %}
   </head>
   <body>
@@ -19,7 +20,10 @@
         <div id=messages>
           <ul class=flashes>
             {% for category, message in messages %}
-              <li class="{{ category }}">{{ message }}</li>
+            <li class="{{ category }}">
+              {{ message }}
+              <button class=remove><img src="{{ url_for('static', filename='remove.png') }}"</button>
+            </li>
             {% endfor %}
           </ul>
         </div>

@@ -54,6 +54,14 @@ ul.flashes li.error {
   color:#fff;
 }
 
+ul.flashes li button.remove {
+  background:transparent;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  float:right;
+}
+
 div#progressbox {
   visibility:hidden;
   position:absolute;
