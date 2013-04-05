@@ -1,5 +1,7 @@
 {% extends "user_base.html" %}
 
 {% block content %}
-<h2>{{ user.username }}</h2>
+<form method=post id=delete_user action="{{ url_for('delete_user') }}">
+    <p><input type=submit value="Delete my account"></p>
+</form>
 {% endblock %}

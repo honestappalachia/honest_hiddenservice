@@ -196,6 +196,15 @@ def logout():
     flash('You were logged out', 'success')
     return redirect(url_for('login'))
 
+@app.route('/settings/user/delete/', methods=['POST'])
+@login_required
+def delete_user():
+    db.session.delete(g.user)
+    db.session.commit()
+    session.pop('user_id', None)
+    flash('Your account was deleted.', 'success')
+    return redirect(url_for('index'))
+
 @app.route('/settings')
 @login_required
 def settings():

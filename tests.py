@@ -118,5 +118,15 @@ class DBTestCase(unittest.TestCase):
         rv = self.login(username, 'testx')
         assert 'Invalid password' in rv.data
 
+    def test_delete_user(self):
+        username, password = 'test', 'test'
+        rv = self.signup(username, password, password, user_type='source')
+        rv = self.login(username, password)
+        assert 'You were logged in' in rv.data
+        rv = self.app.post('/settings/user/delete/', follow_redirects=True)
+        assert 'Your account was deleted.' in rv.data
+        rv = self.login(username, password)
+        assert 'Invalid username' in rv.data
+
 if __name__ == '__main__':
     unittest.main()
