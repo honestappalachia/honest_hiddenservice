@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.username }}{% endblock %}
+
+{% block header %}
+<div id=navbar class=clearfix>
+    <p>Welcome back, {{ user.username }}</p>
+    <ul id=nav>
+        <li><a href="{{ url_for('settings') }}">Settings</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</div>
+{% endblock %}

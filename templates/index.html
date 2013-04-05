@@ -1,16 +1,6 @@
-{% extends "base.html" %}
+{% extends "user_base.html" %}
 
-{% block title %}Home{% endblock %}
-
-{% block header %}
-<div id=navbar class=clearfix>
-    <p>Welcome back, {{ user.username }}</p>
-    <ul id=nav>
-        <li><a href="{{ url_for('settings') }}">Settings</a></li>
-        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-    </ul>
-</div>
-{% endblock %}
+{% block title %}Homepage | {{ super() }}{% endblock %}
 
 {% block content %}
 <p>Welcome to your home page, {{ user.username }}!</p>
